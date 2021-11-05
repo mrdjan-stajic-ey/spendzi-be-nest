@@ -3,6 +3,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { KeywordModule } from './keyword/keyword.module';
+import { ExpenseModule } from './expense/expense.module';
 
 @Module({
   imports: [
@@ -13,6 +14,7 @@ import { KeywordModule } from './keyword/keyword.module';
       },
     ),
     KeywordModule,
+    ExpenseModule,
   ],
   controllers: [AppController],
   providers: [AppService],

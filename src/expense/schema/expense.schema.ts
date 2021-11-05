@@ -1,15 +1,14 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 
-export type KeywordDocument = Keyword & Document;
+export type ExpenseDocument = Expense & Document;
 
 @Schema()
-export class Keyword {
+export class Expense {
   @Prop()
   name: string;
-
   @Prop()
   description: string;
 }
 
-export const KeywordSchema = SchemaFactory.createForClass(Keyword);
+export const ExpenseSchema = SchemaFactory.createForClass(Expense);
