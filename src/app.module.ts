@@ -6,6 +6,8 @@ import { KeywordModule } from './keyword/keyword.module';
 import { ExpenseModule } from './expense/expense.module';
 import { LogModule } from './log/log.module';
 import { AppDBconnection } from './consts';
+import { UserModule } from './user/user.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -20,6 +22,8 @@ import { AppDBconnection } from './consts';
     KeywordModule,
     ExpenseModule,
     LogModule,
+    UserModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],
