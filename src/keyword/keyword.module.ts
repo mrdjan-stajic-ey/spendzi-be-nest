@@ -6,7 +6,10 @@ import { Keyword, KeywordSchema } from './schema/keyword.schema';
 
 @Module({
   imports: [
-    MongooseModule.forFeature([{ name: Keyword.name, schema: KeywordSchema }]),
+    MongooseModule.forFeature(
+      [{ name: Keyword.name, schema: KeywordSchema }],
+      'DATA_DB',
+    ),
   ],
   providers: [KeywordService],
   controllers: [KeywordController],

@@ -6,7 +6,10 @@ import { Expense, ExpenseSchema } from './schema/expense.schema';
 
 @Module({
   imports: [
-    MongooseModule.forFeature([{ name: Expense.name, schema: ExpenseSchema }]),
+    MongooseModule.forFeature(
+      [{ name: Expense.name, schema: ExpenseSchema }],
+      'DATA_DB',
+    ),
   ],
   providers: [ExpenseService],
   controllers: [ExpenseController],

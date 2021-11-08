@@ -4,17 +4,22 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { KeywordModule } from './keyword/keyword.module';
 import { ExpenseModule } from './expense/expense.module';
+import { LogModule } from './log/log.module';
+import { AppDBconnection } from './consts';
 
 @Module({
   imports: [
-    MongooseModule.forRoot(
-      'mongodb://mrdjaney:smederevo026@localhost:27888/?authSource=admin&readPreference=primary&appname=MongoDB%20Compass&directConnection=true&ssl=false',
-      {
-        dbName: 'spendzi-mongo-db',
-      },
-    ),
+    MongooseModule.forRoot(AppDBconnection.dbUri, {
+      connectionName: AppDBconnection.dataDbConnectionName,
+      dbName: AppDBconnection.dataDBname,
+    }),
+    MongooseModule.forRoot(AppDBconnection.dbUri, {
+      connectionName: AppDBconnection.logDbConnectionName,
+      dbName: AppDBconnection.logDBname,
+    }),
     KeywordModule,
     ExpenseModule,
+    LogModule,
   ],
   controllers: [AppController],
   providers: [AppService],
