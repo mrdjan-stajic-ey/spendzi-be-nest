@@ -8,9 +8,14 @@ import { LogModule } from './log/log.module';
 import { AppDBconnection } from './consts';
 import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+      envFilePath: `${process.env.NODE_ENV}.env`, //TODO: make everything be ready from env file. cannot use env in this file, Imports like moongoose neds to be async for this https://stackoverflow.com/questions/63285055/nestjs-how-to-use-env-variables-in-main-app-module-file-for-database-connecti
+    }),
     MongooseModule.forRoot(AppDBconnection.dbUri, {
       connectionName: AppDBconnection.dataDbConnectionName,
       dbName: AppDBconnection.dataDBname,
