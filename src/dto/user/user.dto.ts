@@ -4,6 +4,7 @@ export interface IUserDto {
   username: string;
   password: string;
   email: string;
+  isAdmin?: boolean;
 }
 
 export class UserDTO implements IUserDto {
@@ -16,4 +17,6 @@ export class UserDTO implements IUserDto {
 
   @IsNotEmpty()
   username: string;
+
+  isAdmin? = false;
 }

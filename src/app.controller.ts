@@ -15,12 +15,14 @@ import { AuthService } from './auth/auth.service';
 import { JwtAuthGuard } from './auth/jwt-auth.guard';
 import { LocalAuthGuard } from './auth/local-auth.guard';
 import { UserDTO } from './dto/user/user.dto';
+import { UserService } from './user/user.service';
 
-@Controller('auth')
+@Controller()
 export class AppController {
   constructor(
     private readonly appService: AppService,
     private readonly authService: AuthService,
+    private readonly userService: UserService,
   ) {}
 
   @Get()
@@ -29,11 +31,16 @@ export class AppController {
   }
 
   @Post('/register')
-  async register(@Body() register: UserDTO, @Res() res: Response) {
-    res.status(HttpStatus.OK).json(register);
+  async register(@Body() user: UserDTO, @Res() res: Response) {
+    try {
+      const newUser = await this.userService.createUser(user);
+      res.status(HttpStatus.OK).send(newUser);
+    } catch (error) {
+      res.status(HttpStatus.BAD_REQUEST).send(error);
+    }
   }
 
-  @UseGuards(LocalAuthGuard)
+  @UseGuards(LocalAuthGuard) // was used for learning login should be acessible to all;
   @Post('/login')
   async login(@Request() req) {
     return this.authService.login(req.user);
