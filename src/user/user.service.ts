@@ -35,4 +35,13 @@ export class UserService {
       return null;
     }
   }
+
+  async getById(id: string): Promise<User | null> {
+    const user = await this.userModel.findOne({ id: id });
+    if (user) {
+      return user.toJSON();
+    } else {
+      return null;
+    }
+  }
 }

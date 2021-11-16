@@ -40,7 +40,7 @@ export class AppController {
     }
   }
 
-  @UseGuards(LocalAuthGuard) // was used for learning login should be acessible to all;
+  @UseGuards(LocalAuthGuard)
   @Post('/login')
   async login(@Request() req) {
     return this.authService.login(req.user);
@@ -49,6 +49,7 @@ export class AppController {
   @UseGuards(JwtAuthGuard)
   @Get('profile')
   getProfile(@Request() req) {
+    console.log(req.user);
     return req.user;
   }
 }

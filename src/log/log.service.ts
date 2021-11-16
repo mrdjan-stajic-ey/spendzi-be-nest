@@ -12,4 +12,9 @@ export class LogService {
   async findAll(): Promise<Log[]> {
     return this.logModel.find().exec();
   }
+
+  async helloWorld(): Promise<any> {
+    console.log('Log middleware from service');
+    return Promise.resolve();
+  }
 }
