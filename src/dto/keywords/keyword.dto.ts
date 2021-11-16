@@ -4,7 +4,7 @@ import { KeywordInfluence } from 'src/keyword/schema/keyword.schema';
 export interface IKeywordDTO {
   name: string;
   description?: string;
-  influence: KeywordInfluence;
+  keywordInfluence: KeywordInfluence;
   user: string;
 }
 
@@ -14,7 +14,6 @@ export class KeywordDTO implements IKeywordDTO {
   description = '';
   @IsNotEmpty()
   @IsEnum(KeywordInfluence)
-  influence: KeywordInfluence;
-  @IsNotEmpty()
+  keywordInfluence: KeywordInfluence;
   user: string;
 }

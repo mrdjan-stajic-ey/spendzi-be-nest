@@ -4,6 +4,7 @@ import { KeywordController } from './keyword.controller';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Keyword, KeywordSchema } from './schema/keyword.schema';
 import { UserModule } from 'src/user/user.module';
+import { CurrentUserInterceptor } from 'src/decorators/current.user';
 
 @Module({
   imports: [
@@ -13,7 +14,7 @@ import { UserModule } from 'src/user/user.module';
     ),
     UserModule,
   ],
-  providers: [KeywordService],
+  providers: [KeywordService, CurrentUserInterceptor],
   controllers: [KeywordController],
 })
 export class KeywordModule {}

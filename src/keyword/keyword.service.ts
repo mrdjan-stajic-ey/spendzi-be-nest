@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { KEYWORD_API } from 'src/api-errors/api-constants';
 import { KeywordDTO } from 'src/dto/keywords/keyword.dto';
 import { UserService } from 'src/user/user.service';
 import { Keyword, KeywordDocument } from './schema/keyword.schema';
@@ -18,9 +17,8 @@ export class KeywordService {
     return await this.keywordModel.find().populate('user').exec();
   }
 
-  async create(keyword: KeywordDTO) {
+  async create(keyword: KeywordDTO, userId: string) {
     //TODO: check if keyword exists by some params if needed;
-    const db_keyword = { ...keyword, user: keyword.user };
-    return await this.keywordModel.create(db_keyword);
+    return await this.keywordModel.create({ ...keyword, user: userId });
   }
 }
