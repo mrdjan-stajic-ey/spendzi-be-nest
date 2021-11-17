@@ -14,7 +14,7 @@ export class LogService {
   }
 
   async helloWorld(): Promise<any> {
-    console.log('Log middleware from service');
+    // console.log('Log middleware from service');
     return Promise.resolve();
   }
 }

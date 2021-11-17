@@ -6,7 +6,8 @@ import { LogService } from 'src/log/log.service';
 export class LoggerMiddleware implements NestMiddleware {
   constructor(private readonly logservice: LogService) {}
   use(req: Request, res: Response, next: NextFunction) {
-    this.logservice.helloWorld();
+    // this.logservice.helloWorld();
+    console.log('Backend serviec hit');
     next();
   }
 }

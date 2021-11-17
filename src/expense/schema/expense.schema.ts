@@ -11,4 +11,7 @@ export class Expense {
   description: string;
 }
 
-export const ExpenseSchema = SchemaFactory.createForClass(Expense);
+export const ExpenseSchema = SchemaFactory.createForClass(Expense).set(
+  'toJSON',
+  { virtuals: true },
+);
