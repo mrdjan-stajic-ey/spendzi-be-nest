@@ -4,7 +4,6 @@ import {
   Get,
   HttpStatus,
   Post,
-  Req,
   Request,
   Res,
   UseGuards,
