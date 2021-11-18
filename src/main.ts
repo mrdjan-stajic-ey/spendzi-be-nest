@@ -4,7 +4,6 @@ import { ValidationPipe } from '@nestjs/common';
 import { HttpExceptionFilter } from './filters/MongoEnxceptionFilter';
 import { ConfigService } from '@nestjs/config';
 import { LogService } from './log/log.service';
-// import { AllExceptionsFilter } from './filters/MongoEnxceptionFilter';
 declare const module: any;
 
 const bootstrap = async () => {
