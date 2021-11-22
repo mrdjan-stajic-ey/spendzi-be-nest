@@ -3,7 +3,8 @@ import { Document } from 'mongoose';
 import * as mongoose from 'mongoose';
 import { User } from 'src/user/schema/user.schema';
 import { Type } from 'class-transformer';
-
+import { Expense } from 'src/expense/schema/expense.schema';
+//TODO: this should be called phrase;
 export type KeywordDocument = Keyword & Document;
 export enum KeywordInfluence {
   INBOUND = 'INBOUND',
@@ -17,12 +18,13 @@ export class Keyword {
   @Prop()
   description: string;
 
-  @Prop()
-  keywordInfluence: KeywordInfluence;
-
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: User.name })
   @Type(() => User)
   user: User;
+
+  @Prop([{ type: mongoose.Schema.Types.ObjectId, ref: Expense.name }])
+  @Type(() => Expense)
+  expenseTypes: Expense[];
 }
 
 export const KeywordSchema = SchemaFactory.createForClass(Keyword);

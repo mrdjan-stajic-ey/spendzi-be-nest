@@ -14,7 +14,11 @@ export class KeywordService {
   ) {}
 
   async findAll(): Promise<Keyword[]> {
-    return await this.keywordModel.find().populate('user').exec();
+    return await this.keywordModel
+      .find()
+      .populate('expenseTypes')
+      .populate('user')
+      .exec();
   }
 
   async create(keyword: KeywordDTO, userId: string) {

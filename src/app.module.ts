@@ -10,6 +10,7 @@ import { AuthModule } from './auth/auth.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { LoggerMiddleware } from './middlewares/Log';
 import { LogMiddlewareModule } from './middlewares/LogMiddlewareModule';
+import { BalanceActionModule } from './balance-action/balance-action.module';
 
 @Module({
   imports: [
@@ -41,6 +42,7 @@ import { LogMiddlewareModule } from './middlewares/LogMiddlewareModule';
     ExpenseModule,
     LogModule,
     AuthModule,
+    BalanceActionModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -13,12 +13,13 @@ const bootstrap = async () => {
   const APP_PORT = configService.get<string>('APP_PORT');
   app.useGlobalPipes(new ValidationPipe());
   app.useGlobalFilters(new HttpExceptionFilter());
-
   process.on('uncaughtException', (err) => {
+    console.log('Uncaught exception', err);
     logService.unhandledException(err);
   });
 
   process.on('unhandledRejection', (err) => {
+    console.log('Uncaught promise rejection', err);
     logService.unhandledPromiseReject(err);
   });
 

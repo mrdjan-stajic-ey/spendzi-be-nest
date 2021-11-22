@@ -1,10 +1,8 @@
-import { IsEnum, IsNotEmpty } from 'class-validator';
-import { KeywordInfluence } from 'src/keyword/schema/keyword.schema';
-
+import { IsNotEmpty } from 'class-validator';
+//TODO: Keyword is a phrase list of words asociated with Expanse type :Food, Transpo, bla bla;
 export interface IKeywordDTO {
   name: string;
   description?: string;
-  keywordInfluence: KeywordInfluence;
   user: string;
 }
 
@@ -13,7 +11,7 @@ export class KeywordDTO implements IKeywordDTO {
   name: string;
   description = '';
   @IsNotEmpty()
-  @IsEnum(KeywordInfluence)
-  keywordInfluence: KeywordInfluence;
   user: string;
+  @IsNotEmpty()
+  expenseTypes: [string];
 }
