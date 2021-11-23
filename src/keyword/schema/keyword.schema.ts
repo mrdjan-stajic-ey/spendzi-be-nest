@@ -27,4 +27,7 @@ export class Keyword {
   expenseTypes: Expense[];
 }
 
-export const KeywordSchema = SchemaFactory.createForClass(Keyword);
+export const KeywordSchema = SchemaFactory.createForClass(Keyword).set(
+  'toJSON',
+  { virtuals: true },
+);

@@ -3,15 +3,12 @@ import { IsNotEmpty } from 'class-validator';
 export interface IKeywordDTO {
   name: string;
   description?: string;
-  user: string;
 }
 
 export class KeywordDTO implements IKeywordDTO {
   @IsNotEmpty()
   name: string;
   description = '';
-  @IsNotEmpty()
-  user: string;
   @IsNotEmpty()
   expenseTypes: [string];
 }
