@@ -16,5 +16,6 @@ import { CurrentUserInterceptor } from 'src/decorators/current.user';
   ],
   providers: [KeywordService, CurrentUserInterceptor],
   controllers: [KeywordController],
+  exports: [KeywordService],
 })
 export class KeywordModule {}
