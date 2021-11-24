@@ -42,7 +42,7 @@ export class BalanceActionController {
           balanceAction,
           req.currentUser._id,
         );
-      res.status(HttpStatus.OK).send({});
+      res.status(HttpStatus.OK).send(_balance_action_type);
     } catch (error) {
       res.status(HttpStatus.BAD_REQUEST).send(error);
     }

@@ -9,7 +9,6 @@ import {
 } from './schema/balance-action.schema';
 import { KeywordService } from 'src/keyword/keyword.service';
 import { KeywordDTO } from 'src/dto/keywords/keyword.dto';
-import { Keyword } from 'src/keyword/schema/keyword.schema';
 
 @Injectable()
 export class BalanceActionService {

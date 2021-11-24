@@ -1,6 +1,5 @@
 import { IsNotEmpty } from 'class-validator';
-import { Expense } from 'src/expense/schema/expense.schema';
-import { Keyword, KeywordInfluence } from 'src/keyword/schema/keyword.schema';
+import { KeywordInfluence } from 'src/keyword/schema/keyword.schema';
 
 export interface IBalanceActionDTO {
   phrasesInfluence: KeywordInfluence;
