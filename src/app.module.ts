@@ -11,6 +11,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { LoggerMiddleware } from './middlewares/Log';
 import { LogMiddlewareModule } from './middlewares/LogMiddlewareModule';
 import { BalanceActionModule } from './balance-action/balance-action.module';
+import { SmsModule } from './sms/sms.module';
 
 @Module({
   imports: [
@@ -43,6 +44,7 @@ import { BalanceActionModule } from './balance-action/balance-action.module';
     LogModule,
     AuthModule,
     BalanceActionModule,
+    SmsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

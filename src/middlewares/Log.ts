@@ -7,7 +7,11 @@ export class LoggerMiddleware implements NestMiddleware {
   constructor(private readonly logservice: LogService) {}
   use(req: Request, res: Response, next: NextFunction) {
     // this.logservice.helloWorld();
-    console.log('Backend serviec hit');
+    console.log(
+      `Service hit ${req.baseUrl} ${req.url} ${req.method}_${JSON.stringify(
+        req.body,
+      )}`,
+    );
     next();
   }
 }

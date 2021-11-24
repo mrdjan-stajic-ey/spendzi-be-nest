@@ -9,6 +9,7 @@ import {
 } from './schema/balance-action.schema';
 import { KeywordService } from 'src/keyword/keyword.service';
 import { KeywordDTO } from 'src/dto/keywords/keyword.dto';
+import { User } from 'src/user/schema/user.schema';
 
 @Injectable()
 export class BalanceActionService {
@@ -31,6 +32,15 @@ export class BalanceActionService {
 
   async create(action: BalanceActionDTO, userId: string) {
     return await this.balanceActionModel.create({ ...action, user: userId });
+  }
+
+  async getByUser(user: User) {
+    return await this.balanceActionModel
+      .find({ user })
+      .populate('user')
+      .populate('phrases')
+      .populate('expenseTypes')
+      .exec();
   }
 
   async creteBalanceAction(action: BalanceActionDTO, userId: string) {

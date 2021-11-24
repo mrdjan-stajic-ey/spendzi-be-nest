@@ -3,7 +3,9 @@ import {
   Controller,
   Get,
   HttpStatus,
+  Param,
   Post,
+  Req,
   Request,
   Res,
   UseGuards,
@@ -45,6 +47,21 @@ export class BalanceActionController {
       res.status(HttpStatus.OK).send(_balance_action_type);
     } catch (error) {
       res.status(HttpStatus.BAD_REQUEST).send(error);
+    }
+  }
+
+  @Get('/user')
+  @UseInterceptors(CurrentUserInterceptor)
+  async getBalanceItemsForUser(
+    @Req() request: IAppUserRequestInfo,
+    @Res() response: Response,
+  ) {
+    const { currentUser } = request;
+    try {
+      const result = await this.balanceActionService.getByUser(currentUser);
+      response.status(HttpStatus.OK).send(result);
+    } catch (error) {
+      response.status(HttpStatus.BAD_REQUEST).send(error);
     }
   }
 }
