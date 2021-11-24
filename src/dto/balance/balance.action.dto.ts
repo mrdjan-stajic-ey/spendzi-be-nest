@@ -6,6 +6,7 @@ export interface IBalanceActionDTO {
   amount: number;
   phrases: string[];
   expenseTypes: string[];
+  amountLocators: [string, string];
 }
 
 export class BalanceActionDTO implements IBalanceActionDTO {
@@ -17,4 +18,6 @@ export class BalanceActionDTO implements IBalanceActionDTO {
   phrases: string[];
   @IsNotEmpty()
   expenseTypes: string[];
+  @IsNotEmpty()
+  amountLocators: [string, string];
 }

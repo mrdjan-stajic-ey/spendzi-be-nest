@@ -43,7 +43,7 @@ export class SmsController {
     @Req() req: IAppUserRequestInfo,
   ) {
     try {
-      const result = await this.smsService.setSmsInfo(sms, req.currentUser._id);
+      const result = await this.smsService.smsReceived(sms, req.currentUser);
       resp.status(HttpStatus.OK).send(result);
     } catch (error) {
       resp.status(HttpStatus.BAD_REQUEST).send(error);

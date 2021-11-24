@@ -11,4 +11,20 @@ export class Log {
   timestamp: string;
 }
 
+export enum LOG_LEVEL {
+  VERBOSE,
+  INFO,
+  WARNING,
+  ERROR,
+}
+
+export interface ILog {
+  LOG_LEVEL: LOG_LEVEL;
+  MESSAGE: string;
+  body?: { [key: string]: any };
+  [key: string]: any;
+}
+
 export const LogSchema = SchemaFactory.createForClass(Log);
+
+export type APP_MODE = 'DEV' | 'PROD';

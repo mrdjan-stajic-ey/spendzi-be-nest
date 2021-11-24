@@ -15,6 +15,9 @@ export class BalanceAction {
   @Prop()
   amount: number;
 
+  @Prop()
+  amountLocators: [string, string];
+
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: User.name })
   @Type(() => User)
   user: User;

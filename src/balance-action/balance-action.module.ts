@@ -23,5 +23,6 @@ import {
   ],
   controllers: [BalanceActionController],
   providers: [BalanceActionService, CurrentUserInterceptor],
+  exports: [BalanceActionService],
 })
 export class BalanceActionModule {}

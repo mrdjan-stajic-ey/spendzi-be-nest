@@ -5,6 +5,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { Keyword, KeywordSchema } from './schema/keyword.schema';
 import { UserModule } from 'src/user/user.module';
 import { CurrentUserInterceptor } from 'src/decorators/current.user';
+import { LogModule } from 'src/log/log.module';
 
 @Module({
   imports: [
@@ -13,6 +14,7 @@ import { CurrentUserInterceptor } from 'src/decorators/current.user';
       'DATA_DB',
     ),
     UserModule,
+    LogModule,
   ],
   providers: [KeywordService, CurrentUserInterceptor],
   controllers: [KeywordController],

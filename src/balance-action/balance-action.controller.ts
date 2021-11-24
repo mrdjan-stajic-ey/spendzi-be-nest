@@ -17,7 +17,7 @@ import {
   CurrentUserInterceptor,
   IAppUserRequestInfo,
 } from 'src/decorators/current.user';
-import { BalanceActionDTO } from 'src/dto/balance/BalanceAction';
+import { BalanceActionDTO } from 'src/dto/balance/balance.action.dto';
 import { BalanceActionService } from './balance-action.service';
 import { BalanceAction } from './schema/balance-action.schema';
 

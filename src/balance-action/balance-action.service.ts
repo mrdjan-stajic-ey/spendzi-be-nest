@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectConnection, InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import * as mongoose from 'mongoose';
-import { BalanceActionDTO } from 'src/dto/balance/BalanceAction';
+import { BalanceActionDTO } from 'src/dto/balance/balance.action.dto';
 import {
   BalanceAction,
   BalanceActionDocument,
