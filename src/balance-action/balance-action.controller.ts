@@ -37,11 +37,12 @@ export class BalanceActionController {
     @Res() res: Response,
   ) {
     try {
-      const _balance_action_type = await this.balanceActionService.create(
-        balanceAction,
-        req.currentUser._id,
-      );
-      res.status(HttpStatus.OK).send(_balance_action_type);
+      const _balance_action_type =
+        await this.balanceActionService.creteBalanceAction(
+          balanceAction,
+          req.currentUser._id,
+        );
+      res.status(HttpStatus.OK).send({});
     } catch (error) {
       res.status(HttpStatus.BAD_REQUEST).send(error);
     }

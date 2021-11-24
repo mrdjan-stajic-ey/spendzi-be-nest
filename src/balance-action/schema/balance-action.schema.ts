@@ -4,11 +4,12 @@ import { User } from 'src/user/schema/user.schema';
 import * as mongoose from 'mongoose';
 import { Type } from 'class-transformer';
 import { Keyword, KeywordInfluence } from 'src/keyword/schema/keyword.schema';
+import { Expense } from 'src/expense/schema/expense.schema';
 export type BalanceActionDocument = BalanceAction & Document;
 
 @Schema()
 export class BalanceAction {
-  @Prop({ enum: Object.keys(KeywordInfluence) }) //TODO: find a better way to handle this, dont think there is one, but google a bit more
+  @Prop({ enum: Object.keys(KeywordInfluence) })
   phrasesInfluence: string;
 
   @Prop()
@@ -21,6 +22,10 @@ export class BalanceAction {
   @Prop([{ type: mongoose.Schema.Types.ObjectId, ref: Keyword.name }])
   @Type(() => Keyword)
   phrases: Keyword[];
+
+  @Prop([{ type: mongoose.Schema.Types.ObjectId, ref: Expense.name }])
+  @Type(() => Expense)
+  expenseTypes: Expense[];
 }
 
 export const BalanceActionSchema = SchemaFactory.createForClass(

@@ -12,15 +12,13 @@ export class KeywordService {
   ) {}
 
   async findAll(): Promise<Keyword[]> {
-    return await this.keywordModel
-      .find()
-      .populate('expenseTypes')
-      .populate('user')
-      .exec();
+    return await this.keywordModel.find().populate('user').exec();
   }
 
   async create(keyword: KeywordDTO, userId: string) {
     //TODO: check if keyword exists by some params if needed;
-    return await this.keywordModel.create({ ...keyword, user: userId });
+    return await await (
+      await this.keywordModel.create({ ...keyword, user: userId })
+    ).toJSON();
   }
 }

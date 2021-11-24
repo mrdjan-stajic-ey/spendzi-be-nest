@@ -1,6 +1,8 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { CurrentUserInterceptor } from 'src/decorators/current.user';
+import { ExpenseModule } from 'src/expense/expense.module';
+import { KeywordModule } from 'src/keyword/keyword.module';
 import { UserModule } from 'src/user/user.module';
 import { BalanceActionController } from './balance-action.controller';
 import { BalanceActionService } from './balance-action.service';
@@ -15,7 +17,9 @@ import {
       [{ name: BalanceAction.name, schema: BalanceActionSchema }],
       'DATA_DB',
     ),
+    KeywordModule,
     UserModule,
+    ExpenseModule,
   ],
   controllers: [BalanceActionController],
   providers: [BalanceActionService, CurrentUserInterceptor],
