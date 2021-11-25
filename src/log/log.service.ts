@@ -53,11 +53,11 @@ export class LogService {
 
   async log(log: ILog): Promise<void> {
     if (this.APP_MODE == 'DEV') {
-      console.table({
-        ...log,
-        LOG_LEVEL: LOG_LEVEL[log.LOG_LEVEL],
-        body: this.stringifyBody(log.body),
-      });
+      //   console.table({
+      //     ...log,
+      //     LOG_LEVEL: LOG_LEVEL[log.LOG_LEVEL],
+      //     body: this.stringifyBody(log.body),
+      //   });
     } else {
       if (log.LOG_LEVEL > LOG_LEVEL.VERBOSE) {
         console.log('THIS SHOULD GO TO DB');

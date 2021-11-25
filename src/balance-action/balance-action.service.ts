@@ -36,7 +36,7 @@ export class BalanceActionService {
 
   async getByUser(user: User) {
     return await this.balanceActionModel
-      .find({ user })
+      .find({ user: user })
       .populate('user')
       .populate('phrases')
       .populate('expenseTypes')

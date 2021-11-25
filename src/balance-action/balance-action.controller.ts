@@ -3,7 +3,6 @@ import {
   Controller,
   Get,
   HttpStatus,
-  Param,
   Post,
   Req,
   Request,
@@ -22,7 +21,7 @@ import { BalanceActionService } from './balance-action.service';
 import { BalanceAction } from './schema/balance-action.schema';
 
 @UseGuards(JwtAuthGuard)
-@Controller('balance-action')
+@Controller('/balance-action')
 export class BalanceActionController {
   constructor(private balanceActionService: BalanceActionService) {}
 

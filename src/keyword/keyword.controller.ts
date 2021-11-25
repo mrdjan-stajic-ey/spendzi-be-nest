@@ -17,7 +17,6 @@ import {
 } from 'src/decorators/current.user';
 import { KeywordDTO } from 'src/dto/keywords/keyword.dto';
 import { LogService } from 'src/log/log.service';
-import { LOG_LEVEL } from 'src/log/schema/log.schema';
 import { KeywordService } from './keyword.service';
 import { Keyword } from './schema/keyword.schema';
 
