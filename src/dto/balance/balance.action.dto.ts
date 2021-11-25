@@ -6,7 +6,9 @@ export interface IBalanceActionDTO {
   amount: number;
   phrases: string[];
   expenseTypes: string[];
-  amountLocators: [string, string];
+  amountLocators: string[];
+  template?: boolean;
+  templateId?: string;
 }
 
 export class BalanceActionDTO implements IBalanceActionDTO {
@@ -19,5 +21,7 @@ export class BalanceActionDTO implements IBalanceActionDTO {
   @IsNotEmpty()
   expenseTypes: string[];
   @IsNotEmpty()
-  amountLocators: [string, string];
+  amountLocators: string[];
+  template = false;
+  templateId: string;
 }

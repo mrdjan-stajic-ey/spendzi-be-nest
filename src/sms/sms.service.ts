@@ -2,8 +2,16 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { BalanceActionService } from 'src/balance-action/balance-action.service';
-import { BalanceAction } from 'src/balance-action/schema/balance-action.schema';
+import {
+  BalanceAction,
+  VirtualSchema,
+} from 'src/balance-action/schema/balance-action.schema';
+import {
+  BalanceActionDTO,
+  IBalanceActionDTO,
+} from 'src/dto/balance/balance.action.dto';
 import { SmsDTO } from 'src/dto/Sms/sms.dto';
+import { KeywordInfluence } from 'src/keyword/schema/keyword.schema';
 import { User } from 'src/user/schema/user.schema';
 import { SmsInfo, SmsInfoDocument } from './schema/sms.schema';
 
@@ -26,14 +34,17 @@ export class SmsService {
   checkForKeywords(
     rawSms: string,
     smsWords: string[],
-    balanceItems: BalanceAction[],
+    balanceItems: VirtualSchema[],
   ) {
     const blueprintResult = {
       keywords: [],
       amount: null,
       incoming: null, //can be true or false;
+      templateId: null,
     };
     for (const balanceItem of balanceItems) {
+      debugger;
+      console.log('BALANCE ITEM', balanceItem);
       const { phrases } = balanceItem;
       for (const phrase of phrases) {
         const { name } = phrase;
@@ -43,12 +54,12 @@ export class SmsService {
           blueprintResult.keywords.push(name);
           if (blueprintResult.keywords.length === phrases.length) {
             //this should mean that is done
+            blueprintResult.templateId = balanceItem.id;
             blueprintResult.incoming =
               balanceItem.phrasesInfluence === 'INBOUND';
             //findAmount - same logic as in the app;
             blueprintResult.amount = rawSms.slice(
               rawSms.indexOf(balanceItem.amountLocators[0]) +
-                1 +
                 balanceItem.amountLocators[0].length,
               rawSms.indexOf(balanceItem.amountLocators[1]),
             );
@@ -63,7 +74,7 @@ export class SmsService {
   }
 
   async _createBalanceItem(smsData: SmsDTO, user: User) {
-    const balanceItems: BalanceAction[] = await this.balanceAction.getByUser(
+    const balanceItems: VirtualSchema[] = await this.balanceAction.getByUser(
       user,
     );
     const words: string[] = smsData.content
@@ -93,6 +104,31 @@ export class SmsService {
       console.log('This should not happen');
     } else {
       console.table(blueprintResult);
+      try {
+        const balanceItemToCopy = balanceItems.filter(
+          (f) => f.id === blueprintResult.templateId,
+        )[0];
+        this.balanceAction.create(
+          {
+            amount: parseFloat(blueprintResult.amount.trim()),
+            amountLocators: balanceItemToCopy.amountLocators,
+            templateId: balanceItemToCopy.id,
+            //@ts-ignore
+            phrases: balanceItemToCopy.phrases.map((p) => p._id),
+            //@ts-ignore
+            expenseTypes: balanceItemToCopy.expenseTypes.map((et) => et._id),
+            phrasesInfluence:
+              balanceItemToCopy.phrasesInfluence == KeywordInfluence.INBOUND
+                ? KeywordInfluence.INBOUND
+                : KeywordInfluence.OUTBOUND,
+            template: false,
+          },
+          //@ts-ignore
+          user.id,
+        );
+      } catch (error) {
+        console.log('FAIL', error);
+      }
     }
     return Promise.resolve();
   }

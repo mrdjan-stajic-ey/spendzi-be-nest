@@ -6,6 +6,7 @@ import { BalanceActionDTO } from 'src/dto/balance/balance.action.dto';
 import {
   BalanceAction,
   BalanceActionDocument,
+  VirtualSchema,
 } from './schema/balance-action.schema';
 import { KeywordService } from 'src/keyword/keyword.service';
 import { KeywordDTO } from 'src/dto/keywords/keyword.dto';
@@ -34,13 +35,14 @@ export class BalanceActionService {
     return await this.balanceActionModel.create({ ...action, user: userId });
   }
 
-  async getByUser(user: User) {
-    return await this.balanceActionModel
+  async getByUser(user: User): Promise<VirtualSchema[]> {
+    const bla = await this.balanceActionModel
       .find({ user: user })
       .populate('user')
       .populate('phrases')
       .populate('expenseTypes')
       .exec();
+    return bla;
   }
 
   async creteBalanceAction(action: BalanceActionDTO, userId: string) {

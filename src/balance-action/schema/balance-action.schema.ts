@@ -5,7 +5,10 @@ import * as mongoose from 'mongoose';
 import { Type } from 'class-transformer';
 import { Keyword, KeywordInfluence } from 'src/keyword/schema/keyword.schema';
 import { Expense } from 'src/expense/schema/expense.schema';
-export type BalanceActionDocument = BalanceAction & Document;
+export type BalanceActionDocument = BalanceAction &
+  Document & {
+    id: string;
+  };
 
 @Schema()
 export class BalanceAction {
@@ -33,4 +36,13 @@ export class BalanceAction {
 
 export const BalanceActionSchema = SchemaFactory.createForClass(
   BalanceAction,
-).set('toJSON', { virtuals: true });
+).set('toObject', {
+  virtuals: true,
+});
+BalanceActionSchema.virtual('id').get(function () {
+  return this._id.toHexString();
+});
+
+export class VirtualSchema extends BalanceAction {
+  id: string;
+}
