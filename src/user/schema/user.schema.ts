@@ -19,4 +19,6 @@ export class User extends SuperAppSch {
 
 export type UserDocument = SuperAppDocument & User;
 
-export const UserSchema = SchemaFactory.createForClass(User);
+export const UserSchema = SchemaFactory.createForClass(User).set('toObject', {
+  virtuals: true,
+});

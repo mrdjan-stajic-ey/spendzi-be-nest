@@ -100,6 +100,7 @@ export class SmsService {
         const balanceItemToCopy = balanceItems.filter(
           (f) => f.id === blueprintResult.templateId,
         )[0];
+        console.log(balanceItemToCopy.id);
         this.balanceAction.create(
           {
             amount: parseFloat(blueprintResult.amount.trim()),
