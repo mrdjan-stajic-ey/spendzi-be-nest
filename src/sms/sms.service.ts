@@ -2,17 +2,10 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { BalanceActionService } from 'src/balance-action/balance-action.service';
-import {
-  BalanceAction,
-  VirtualSchema,
-} from 'src/balance-action/schema/balance-action.schema';
-import {
-  BalanceActionDTO,
-  IBalanceActionDTO,
-} from 'src/dto/balance/balance.action.dto';
+import { BalanceActionDocument } from 'src/balance-action/schema/balance-action.schema';
 import { SmsDTO } from 'src/dto/Sms/sms.dto';
 import { KeywordInfluence } from 'src/keyword/schema/keyword.schema';
-import { User } from 'src/user/schema/user.schema';
+import { User, UserDocument } from 'src/user/schema/user.schema';
 import { SmsInfo, SmsInfoDocument } from './schema/sms.schema';
 
 @Injectable()
@@ -27,14 +20,14 @@ export class SmsService {
     return await this.smsModel.find({ user }).exec();
   }
 
-  async smsReceived(sms: SmsDTO, user: User) {
+  async smsReceived(sms: SmsDTO, user: UserDocument) {
     return await this._createBalanceItem(sms, user);
   }
 
   checkForKeywords(
     rawSms: string,
     smsWords: string[],
-    balanceItems: VirtualSchema[],
+    balanceItems: BalanceActionDocument[],
   ) {
     const blueprintResult = {
       keywords: [],
@@ -73,10 +66,9 @@ export class SmsService {
     throw this.NOT_APLICABLE;
   }
 
-  async _createBalanceItem(smsData: SmsDTO, user: User) {
-    const balanceItems: VirtualSchema[] = await this.balanceAction.getByUser(
-      user,
-    );
+  async _createBalanceItem(smsData: SmsDTO, user: UserDocument) {
+    const balanceItems: BalanceActionDocument[] =
+      await this.balanceAction.getByUser(user);
     const words: string[] = smsData.content
       .replace(/([ .,;:]+)/g, '$1§sep§')
       .split('§sep§') //to words
@@ -113,17 +105,14 @@ export class SmsService {
             amount: parseFloat(blueprintResult.amount.trim()),
             amountLocators: balanceItemToCopy.amountLocators,
             templateId: balanceItemToCopy.id,
-            //@ts-ignore
-            phrases: balanceItemToCopy.phrases.map((p) => p._id),
-            //@ts-ignore
-            expenseTypes: balanceItemToCopy.expenseTypes.map((et) => et._id),
+            phrases: balanceItemToCopy.phrases.map((p) => p.id),
+            expenseTypes: balanceItemToCopy.expenseTypes.map((et) => et.id),
             phrasesInfluence:
               balanceItemToCopy.phrasesInfluence == KeywordInfluence.INBOUND
                 ? KeywordInfluence.INBOUND
                 : KeywordInfluence.OUTBOUND,
             template: false,
           },
-          //@ts-ignore
           user.id,
         );
       } catch (error) {

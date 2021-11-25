@@ -1,8 +1,12 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
+import {
+  SuperAppDocument,
+  SuperAppSch,
+  SuperAppSchema,
+} from 'src/schema/app.schema';
 
 @Schema()
-export class User {
+export class User extends SuperAppSch {
   @Prop()
   username: string;
   @Prop()
@@ -13,8 +17,6 @@ export class User {
   password: string;
 }
 
-export type UserDocument = User & Document;
+export type UserDocument = SuperAppDocument & User;
 
-export const UserSchema = SchemaFactory.createForClass(User).set('toJSON', {
-  virtuals: true,
-});
+export const UserSchema = SchemaFactory.createForClass(User);

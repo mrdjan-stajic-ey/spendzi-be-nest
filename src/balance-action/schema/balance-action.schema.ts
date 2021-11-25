@@ -1,17 +1,14 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
 import { User } from 'src/user/schema/user.schema';
 import * as mongoose from 'mongoose';
 import { Type } from 'class-transformer';
 import { Keyword, KeywordInfluence } from 'src/keyword/schema/keyword.schema';
-import { Expense } from 'src/expense/schema/expense.schema';
-export type BalanceActionDocument = BalanceAction &
-  Document & {
-    id: string;
-  };
+import { Expense, ExpenseDocument } from 'src/expense/schema/expense.schema';
+import { SuperAppDocument, SuperAppSch } from 'src/schema/app.schema';
+export type BalanceActionDocument = BalanceAction & SuperAppDocument;
 
 @Schema()
-export class BalanceAction {
+export class BalanceAction extends SuperAppSch {
   @Prop({ enum: Object.keys(KeywordInfluence) })
   phrasesInfluence: string;
 
@@ -31,18 +28,7 @@ export class BalanceAction {
 
   @Prop([{ type: mongoose.Schema.Types.ObjectId, ref: Expense.name }])
   @Type(() => Expense)
-  expenseTypes: Expense[];
+  expenseTypes: ExpenseDocument[];
 }
 
-export const BalanceActionSchema = SchemaFactory.createForClass(
-  BalanceAction,
-).set('toObject', {
-  virtuals: true,
-});
-BalanceActionSchema.virtual('id').get(function () {
-  return this._id.toHexString();
-});
-
-export class VirtualSchema extends BalanceAction {
-  id: string;
-}
+export const BalanceActionSchema = SchemaFactory.createForClass(BalanceAction);

@@ -1,13 +1,13 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
 import { User } from 'src/user/schema/user.schema';
 import * as mongoose from 'mongoose';
 import { Type } from 'class-transformer';
+import { SuperAppDocument, SuperAppSch } from 'src/schema/app.schema';
 
-export type SmsInfoDocument = SmsInfo & Document;
+export type SmsInfoDocument = SuperAppDocument & SmsInfo;
 
 @Schema()
-export class SmsInfo {
+export class SmsInfo extends SuperAppSch {
   @Prop()
   content: string;
 
@@ -25,7 +25,4 @@ export class SmsInfo {
   user: User;
 }
 
-export const SmsInfoSchema = SchemaFactory.createForClass(SmsInfo).set(
-  'toJSON',
-  { virtuals: true },
-);
+export const SmsInfoSchema = SchemaFactory.createForClass(SmsInfo);
