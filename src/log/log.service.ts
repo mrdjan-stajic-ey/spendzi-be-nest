@@ -33,7 +33,13 @@ export class LogService {
     try {
       console.log('Unhandled exception', error);
     } catch (error) {
-      //We can do anything here;
+      this.log({
+        LOG_LEVEL: LOG_LEVEL.ERROR,
+        MESSAGE: 'UNHANDLED_EXCEPTION',
+        body: {
+          error: error,
+        },
+      });
     }
     return Promise.resolve();
   }
@@ -42,7 +48,13 @@ export class LogService {
     try {
       console.log('Unhandled promiseReject', error);
     } catch (error) {
-      //We can do anything here;
+      this.log({
+        LOG_LEVEL: LOG_LEVEL.ERROR,
+        MESSAGE: 'UNHANDLED_PROMISE_REJECT',
+        body: {
+          error: error,
+        },
+      });
     }
     return Promise.resolve();
   }
@@ -53,11 +65,11 @@ export class LogService {
 
   async log(log: ILog): Promise<void> {
     if (this.APP_MODE == 'DEV') {
-      //   console.table({
-      //     ...log,
-      //     LOG_LEVEL: LOG_LEVEL[log.LOG_LEVEL],
-      //     body: this.stringifyBody(log.body),
-      //   });
+      console.table({
+        ...log,
+        LOG_LEVEL: LOG_LEVEL[log.LOG_LEVEL],
+        body: this.stringifyBody(log.body),
+      });
     } else {
       if (log.LOG_LEVEL > LOG_LEVEL.VERBOSE) {
         console.log('THIS SHOULD GO TO DB');

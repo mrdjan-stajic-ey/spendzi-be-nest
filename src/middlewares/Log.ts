@@ -9,7 +9,7 @@ export class LoggerMiddleware implements NestMiddleware {
   use(req: Request, res: Response, next: NextFunction) {
     this.logservice.log({
       LOG_LEVEL: LOG_LEVEL.VERBOSE,
-      MESSAGE: 'server  hit',
+      MESSAGE: 'SERVER_HIT',
       body: {
         baseUrl: req.baseUrl,
         method: req.method,
