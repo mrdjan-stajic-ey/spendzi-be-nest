@@ -31,8 +31,6 @@ export class LogService {
 
   async unhandledException(error): Promise<void> {
     try {
-      console.log('Unhandled exception', error);
-    } catch (error) {
       this.log({
         LOG_LEVEL: LOG_LEVEL.ERROR,
         MESSAGE: 'UNHANDLED_EXCEPTION',
@@ -40,14 +38,12 @@ export class LogService {
           error: error,
         },
       });
-    }
+    } catch (error) {}
     return Promise.resolve();
   }
 
   async unhandledPromiseReject(error): Promise<void> {
     try {
-      console.log('Unhandled promiseReject', error);
-    } catch (error) {
       this.log({
         LOG_LEVEL: LOG_LEVEL.ERROR,
         MESSAGE: 'UNHANDLED_PROMISE_REJECT',
@@ -55,7 +51,7 @@ export class LogService {
           error: error,
         },
       });
-    }
+    } catch (error) {}
     return Promise.resolve();
   }
 
