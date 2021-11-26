@@ -16,7 +16,7 @@ export class LogService {
     @InjectModel(Log.name) private readonly logModel: Model<LogDocument>,
     private readonly configService: ConfigService,
   ) {
-    this.APP_MODE = (configService.get<string>('APP_MODE') ||
+    this.APP_MODE = (this.configService.get<string>('APP_MODE') ||
       'PROD') as unknown as APP_MODE; //trust me bro
   }
 
