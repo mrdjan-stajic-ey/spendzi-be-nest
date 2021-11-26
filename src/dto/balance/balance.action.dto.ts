@@ -3,7 +3,7 @@ import { KeywordInfluence } from 'src/keyword/schema/keyword.schema';
 
 export interface IBalanceActionDTO {
   phrasesInfluence: KeywordInfluence;
-  amount: number;
+  amount: string;
   phrases: string[];
   expenseTypes: string[];
   amountLocators: string[];
@@ -13,7 +13,7 @@ export interface IBalanceActionDTO {
 
 export class BalanceActionDTO implements IBalanceActionDTO {
   @IsNotEmpty()
-  amount: number;
+  amount: string;
   @IsNotEmpty()
   phrasesInfluence: KeywordInfluence;
   @IsNotEmpty()
@@ -23,5 +23,5 @@ export class BalanceActionDTO implements IBalanceActionDTO {
   @IsNotEmpty()
   amountLocators: string[];
   template = false;
-  templateId: string;
+  templateId = '';
 }

@@ -24,6 +24,7 @@ export class SmsService {
     return await this._createBalanceItem(sms, user);
   }
 
+  //ovo treba da se razbije na mnogo funkcija
   checkForKeywords(
     rawSms: string,
     smsWords: string[],
@@ -36,26 +37,27 @@ export class SmsService {
       templateId: null,
     };
     for (const balanceItem of balanceItems) {
-      debugger;
-      console.log('BALANCE ITEM', balanceItem);
       const { phrases } = balanceItem;
       for (const phrase of phrases) {
         const { name } = phrase;
-        if (smsWords.indexOf(name) === -1) {
+        if (smsWords.indexOf(name.toLocaleLowerCase()) === -1) {
           continue;
         } else {
           blueprintResult.keywords.push(name);
           if (blueprintResult.keywords.length === phrases.length) {
             //this should mean that is done
             blueprintResult.templateId = balanceItem.id;
-            blueprintResult.incoming =
-              balanceItem.phrasesInfluence === 'INBOUND';
-            //findAmount - same logic as in the app;
-            blueprintResult.amount = rawSms.slice(
-              rawSms.indexOf(balanceItem.amountLocators[0]) +
-                balanceItem.amountLocators[0].length,
-              rawSms.indexOf(balanceItem.amountLocators[1]),
-            );
+            (blueprintResult.incoming =
+              balanceItem.phrasesInfluence === 'INBOUND'),
+              //findAmount - same logic as in the app;
+              (blueprintResult.amount = rawSms.slice(
+                rawSms.indexOf(
+                  balanceItem.amountLocators[0].replace(/([ :]+)/g, '$1§sep§'),
+                ) + balanceItem.amountLocators[0].length,
+                rawSms.indexOf(
+                  balanceItem.amountLocators[1].replace(/([ :]+)/g, '$1§sep§'),
+                ),
+              ));
             return blueprintResult;
           } else {
             continue;
@@ -75,10 +77,10 @@ export class SmsService {
       .map((w) => w.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, '')) //strip punctuation signs
       .map((w) => w.trim()); //whitespace
     let blueprintResult = null;
-
+    const sms_content_toLower = smsData.content.toLowerCase();
     try {
       blueprintResult = this.checkForKeywords(
-        smsData.content,
+        sms_content_toLower,
         words,
         balanceItems,
       );
@@ -101,9 +103,12 @@ export class SmsService {
           (f) => f.id === blueprintResult.templateId,
         )[0];
         console.log(balanceItemToCopy.id);
-        this.balanceAction.create(
+        await this.balanceAction.create(
           {
-            amount: parseFloat(blueprintResult.amount.trim()),
+            amount: blueprintResult.amount
+              .trim()
+              .replace(',', '')
+              .replace('.', ''),
             amountLocators: balanceItemToCopy.amountLocators,
             templateId: balanceItemToCopy.id,
             phrases: balanceItemToCopy.phrases.map((p) => p.id),
@@ -114,8 +119,9 @@ export class SmsService {
                 : KeywordInfluence.OUTBOUND,
             template: false,
           },
-          user.id,
+          user,
         );
+        console.log('message parsed');
       } catch (error) {
         console.log('FAIL', error);
       }

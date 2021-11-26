@@ -38,6 +38,7 @@ export class BalanceActionController {
     @Res() res: Response,
   ) {
     try {
+      console.log('what', balanceAction, req.currentUser);
       const _balance_action_type =
         await this.balanceActionService.creteBalanceAction(
           balanceAction,

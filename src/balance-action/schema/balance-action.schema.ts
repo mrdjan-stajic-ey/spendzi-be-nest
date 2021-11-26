@@ -1,8 +1,12 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { User } from 'src/user/schema/user.schema';
+import { User, UserDocument } from 'src/user/schema/user.schema';
 import * as mongoose from 'mongoose';
 import { Type } from 'class-transformer';
-import { Keyword, KeywordInfluence } from 'src/keyword/schema/keyword.schema';
+import {
+  Keyword,
+  KeywordDocument,
+  KeywordInfluence,
+} from 'src/keyword/schema/keyword.schema';
 import { Expense, ExpenseDocument } from 'src/expense/schema/expense.schema';
 import { SuperAppDocument, SuperAppSch } from 'src/schema/app.schema';
 export type BalanceActionDocument = BalanceAction & SuperAppDocument;
@@ -13,22 +17,29 @@ export class BalanceAction extends SuperAppSch {
   phrasesInfluence: string;
 
   @Prop()
-  amount: number;
+  amount: string;
 
   @Prop()
   amountLocators: [string, string];
 
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: User.name })
   @Type(() => User)
-  user: User;
+  user: UserDocument;
 
   @Prop([{ type: mongoose.Schema.Types.ObjectId, ref: Keyword.name }])
   @Type(() => Keyword)
-  phrases: Keyword[];
+  phrases: KeywordDocument[];
 
   @Prop([{ type: mongoose.Schema.Types.ObjectId, ref: Expense.name }])
   @Type(() => Expense)
   expenseTypes: ExpenseDocument[];
+
+  @Prop()
+  template: boolean;
+
+  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: BalanceAction.name })
+  @Type(() => BalanceAction)
+  tempalteId: BalanceActionDocument;
 }
 
 export const BalanceActionSchema = SchemaFactory.createForClass(BalanceAction);

@@ -16,9 +16,6 @@ export enum KeywordInfluence {
 @Schema()
 export class Keyword extends SuperAppSch {
   @Prop()
-  id: string;
-
-  @Prop()
   name: string;
 
   @Prop()

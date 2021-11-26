@@ -9,7 +9,7 @@ import {
 } from './schema/balance-action.schema';
 import { KeywordService } from 'src/keyword/keyword.service';
 import { KeywordDTO } from 'src/dto/keywords/keyword.dto';
-import { User } from 'src/user/schema/user.schema';
+import { UserDocument } from 'src/user/schema/user.schema';
 
 @Injectable()
 export class BalanceActionService {
@@ -30,13 +30,16 @@ export class BalanceActionService {
       .exec();
   }
 
-  async create(action: BalanceActionDTO, userId: string) {
-    return await this.balanceActionModel.create({ ...action, user: userId });
+  async create(action: BalanceActionDTO, user: UserDocument) {
+    return await this.balanceActionModel.create({
+      ...action,
+      user: user,
+    });
   }
 
-  async getByUser(user: User): Promise<BalanceActionDocument[]> {
+  async getByUser(user: UserDocument): Promise<BalanceActionDocument[]> {
     const bla = await this.balanceActionModel
-      .find({ user: user })
+      .find({ user })
       .populate('user')
       .populate('phrases')
       .populate('expenseTypes')
