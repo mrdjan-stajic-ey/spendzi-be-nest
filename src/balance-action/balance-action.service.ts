@@ -10,6 +10,8 @@ import {
 import { KeywordService } from 'src/keyword/keyword.service';
 import { KeywordDTO } from 'src/dto/keywords/keyword.dto';
 import { UserDocument } from 'src/user/schema/user.schema';
+import { LogService } from 'src/log/log.service';
+import { LOG_LEVEL } from 'src/log/schema/log.schema';
 
 @Injectable()
 export class BalanceActionService {
@@ -19,6 +21,7 @@ export class BalanceActionService {
     @InjectConnection('DATA_DB')
     private readonly connection: mongoose.Connection,
     private readonly keywordService: KeywordService,
+    private readonly logService: LogService,
   ) {}
 
   async findAll(): Promise<BalanceAction[]> {
@@ -31,24 +34,40 @@ export class BalanceActionService {
   }
 
   async create(action: BalanceActionDTO, user: UserDocument) {
-    return await this.balanceActionModel.create({
+    this.logService.log({
+      LOG_LEVEL: LOG_LEVEL.INFO,
+      MESSAGE: 'CREATING LOG ACTION',
+      body: { action, user },
+    });
+    const result = await this.balanceActionModel.create({
       ...action,
       user: user,
     });
+    this.logService.log({
+      LOG_LEVEL: LOG_LEVEL.INFO,
+      MESSAGE: 'LOG_ACTION_CREATED',
+      body: { action, user },
+    });
+    return result;
   }
 
   async getByUser(user: UserDocument): Promise<BalanceActionDocument[]> {
-    const bla = await this.balanceActionModel
+    const expenseItemByUser = await this.balanceActionModel
       .find({ user })
       .populate('user')
       .populate('phrases')
       .populate('expenseTypes')
       .exec();
-    return bla;
+    return expenseItemByUser;
   }
 
   async creteBalanceAction(action: BalanceActionDTO, userId: string) {
     const transactionSession = await this.connection.startSession();
+    this.logService.log({
+      LOG_LEVEL: LOG_LEVEL.INFO,
+      MESSAGE: 'TRANSACTION STARTED',
+      body: { action, userId },
+    });
     transactionSession.startTransaction();
     try {
       const { phrases } = action;
@@ -68,8 +87,19 @@ export class BalanceActionService {
         phrases: [...keywordIds.map((kw) => kw._id)],
       };
       this.balanceActionModel.create({ ...augmentedAction, user: userId });
-      return transactionSession.commitTransaction();
+      const result = await transactionSession.commitTransaction();
+      this.logService.log({
+        LOG_LEVEL: LOG_LEVEL.INFO,
+        MESSAGE: 'TRANSACTION ENDED',
+        body: { action, userId },
+      });
+      return result;
     } catch (error) {
+      this.logService.log({
+        LOG_LEVEL: LOG_LEVEL.ERROR,
+        MESSAGE: 'BALANCE_ACTION_FAILED',
+        body: { action, userId },
+      });
       transactionSession.abortTransaction();
       return error;
     } finally {

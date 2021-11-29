@@ -45,18 +45,28 @@ export class SmsService {
         } else {
           blueprintResult.keywords.push(name);
           if (blueprintResult.keywords.length === phrases.length) {
+            debugger;
             //this should mean that is done
+            const preparedPrefix = balanceItem.amountLocators[0]
+              .toLowerCase()
+              .replace(/([ :]+)/g, '$1§sep§'); // duplikacija koda, boli me uvo
+            const preparedSufix = balanceItem.amountLocators[1]
+              .toLowerCase()
+              .replace(/([ :]+)/g, '$1§sep§');
+            const amountString = rawSms
+              .slice(
+                rawSms.indexOf(preparedPrefix) + preparedPrefix.length,
+                rawSms.indexOf(preparedSufix),
+              )
+              .replace(/[^0-9\.,]/g, ''); //zarezi odvajaju hiljade (to skloniti) tacke odvajau decimale, to nakalemiti kasnije // sacuvati decimale i dodati kasnije
+
             blueprintResult.templateId = balanceItem.id;
             (blueprintResult.incoming =
               balanceItem.phrasesInfluence === 'INBOUND'),
               //findAmount - same logic as in the app;
               (blueprintResult.amount = rawSms.slice(
-                rawSms.indexOf(
-                  balanceItem.amountLocators[0].replace(/([ :]+)/g, '$1§sep§'),
-                ) + balanceItem.amountLocators[0].length,
-                rawSms.indexOf(
-                  balanceItem.amountLocators[1].replace(/([ :]+)/g, '$1§sep§'),
-                ),
+                rawSms.indexOf(preparedPrefix) + preparedPrefix.length,
+                rawSms.indexOf(preparedSufix),
               ));
             return blueprintResult;
           } else {
@@ -67,7 +77,13 @@ export class SmsService {
     }
     throw this.NOT_APLICABLE;
   }
-
+  /**
+   * This is not a way you handle substrings and sub arrays i dont know algorithms //slow as fuck
+   * first mega regex for words is to strip them of punctaction and make them lowercase and make an array of them
+   * @param smsData
+   * @param user
+   * @returns
+   */
   async _createBalanceItem(smsData: SmsDTO, user: UserDocument) {
     const balanceItems: BalanceActionDocument[] =
       await this.balanceAction.getByUser(user);
@@ -75,9 +91,10 @@ export class SmsService {
       .replace(/([ .,;:]+)/g, '$1§sep§')
       .split('§sep§') //to words
       .map((w) => w.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, '')) //strip punctuation signs
-      .map((w) => w.trim()); //whitespace
+      .map((w) => w.trim()) //whitespace
+      .map((w) => w.toLowerCase()); //loweracse shit
     let blueprintResult = null;
-    const sms_content_toLower = smsData.content.toLowerCase();
+    const sms_content_toLower = smsData.content.toLowerCase(); // we keep the raw sms in lowercase because the amount is extracted here;
     try {
       blueprintResult = this.checkForKeywords(
         sms_content_toLower,
@@ -102,15 +119,15 @@ export class SmsService {
         const balanceItemToCopy = balanceItems.filter(
           (f) => f.id === blueprintResult.templateId,
         )[0];
-        console.log(balanceItemToCopy.id);
         await this.balanceAction.create(
           {
-            amount: blueprintResult.amount
+            amount: blueprintResult.amount //TODO: fix it per sms`s you sent yourself
               .trim()
               .replace(',', '')
-              .replace('.', ''),
+              .replace('.', '')
+              .trim(), //TODO this needs to be revised
             amountLocators: balanceItemToCopy.amountLocators,
-            templateId: balanceItemToCopy.id,
+            templateId: blueprintResult.id,
             phrases: balanceItemToCopy.phrases.map((p) => p.id),
             expenseTypes: balanceItemToCopy.expenseTypes.map((et) => et.id),
             phrasesInfluence:
@@ -121,7 +138,6 @@ export class SmsService {
           },
           user,
         );
-        console.log('message parsed');
       } catch (error) {
         console.log('FAIL', error);
       }
