@@ -11,13 +11,12 @@ export class KeywordService {
     private readonly keywordModel: Model<KeywordDocument>,
   ) {}
 
-  async findAll(): Promise<Keyword[]> {
+  async findAll(): Promise<KeywordDocument[]> {
     return await this.keywordModel.find().populate('user').exec();
   }
 
   async create(keyword: KeywordDTO, userId: string) {
-    //TODO: check if keyword exists by some params if needed;
-    return await await (
+    return (
       await this.keywordModel.create({ ...keyword, user: userId })
     ).toJSON();
   }

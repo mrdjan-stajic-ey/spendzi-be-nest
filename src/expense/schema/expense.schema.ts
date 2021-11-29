@@ -1,17 +1,19 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
+import {
+  SuperAppDocument,
+  SuperAppSch,
+  SuperAppSchema,
+} from 'src/schema/app.schema';
 
-export type ExpenseDocument = Expense & Document;
+export type ExpenseDocument = SuperAppDocument & Expense;
 
 @Schema()
-export class Expense {
+export class Expense extends SuperAppSch {
   @Prop()
   name: string;
   @Prop()
   description: string;
 }
 
-export const ExpenseSchema = SchemaFactory.createForClass(Expense).set(
-  'toJSON',
-  { virtuals: true },
-);
+export const ExpenseSchema =
+  SuperAppSchema && SchemaFactory.createForClass(Expense);

@@ -4,7 +4,7 @@ import {
   Injectable,
   NestInterceptor,
 } from '@nestjs/common';
-import { User } from 'src/user/schema/user.schema';
+import { UserDocument } from 'src/user/schema/user.schema';
 import { UserService } from 'src/user/user.service';
 
 @Injectable()
@@ -19,13 +19,12 @@ export class CurrentUserInterceptor implements NestInterceptor {
       const user = await this.userService.findOne(username);
       request.currentUser = user;
     }
-
     return handler.handle();
   }
 }
 
 export interface IAppUserRequestInfo {
-  currentUser: User & {
+  currentUser: UserDocument & {
     _id: string; //FML and fuck mongo and fuck orms.
   };
 }

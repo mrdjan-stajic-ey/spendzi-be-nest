@@ -1,10 +1,10 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
+import { SuperAppDocument, SuperAppSch } from 'src/schema/app.schema';
 
-export type LogDocument = Log & Document;
+export type LogDocument = SuperAppDocument & Log;
 
 @Schema({ collection: 'log' })
-export class Log {
+export class Log extends SuperAppSch {
   @Prop()
   name: string;
   @Prop()
@@ -17,7 +17,6 @@ export enum LOG_LEVEL {
   WARNING,
   ERROR,
 }
-
 export interface ILog {
   LOG_LEVEL: LOG_LEVEL;
   MESSAGE: string;
