@@ -1,5 +1,9 @@
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { SuperAppDocument, SuperAppSch } from 'src/schema/app.schema';
+import { Prop, Schema } from '@nestjs/mongoose';
+import {
+  createVirtualSchema,
+  SuperAppDocument,
+  SuperAppSch,
+} from 'src/schema/app.schema';
 
 @Schema()
 export class User extends SuperAppSch {
@@ -14,7 +18,4 @@ export class User extends SuperAppSch {
 }
 
 export type UserDocument = User & SuperAppDocument;
-
-export const UserSchema = SchemaFactory.createForClass(User).set('toObject', {
-  virtuals: true,
-});
+export const UserSchema = createVirtualSchema(User);

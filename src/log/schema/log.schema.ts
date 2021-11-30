@@ -1,6 +1,11 @@
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { SuperAppDocument, SuperAppSch } from 'src/schema/app.schema';
+import { Prop, Schema } from '@nestjs/mongoose';
+import {
+  createVirtualSchema,
+  SuperAppDocument,
+  SuperAppSch,
+} from 'src/schema/app.schema';
 
+export type APP_MODE = 'DEV' | 'PROD';
 export type LogDocument = SuperAppDocument & Log;
 
 @Schema({ collection: 'log' })
@@ -24,6 +29,4 @@ export interface ILog {
   [key: string]: any;
 }
 
-export const LogSchema = SchemaFactory.createForClass(Log);
-
-export type APP_MODE = 'DEV' | 'PROD';
+export const LogSchema = createVirtualSchema(Log);

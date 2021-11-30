@@ -1,4 +1,4 @@
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Prop, Schema } from '@nestjs/mongoose';
 import { User, UserDocument } from 'src/user/schema/user.schema';
 import * as mongoose from 'mongoose';
 import { Type } from 'class-transformer';
@@ -8,7 +8,11 @@ import {
   KeywordInfluence,
 } from 'src/keyword/schema/keyword.schema';
 import { Expense, ExpenseDocument } from 'src/expense/schema/expense.schema';
-import { SuperAppDocument, SuperAppSch } from 'src/schema/app.schema';
+import {
+  createVirtualSchema,
+  SuperAppDocument,
+  SuperAppSch,
+} from 'src/schema/app.schema';
 
 @Schema()
 export class BalanceAction extends SuperAppSch {
@@ -40,7 +44,6 @@ export class BalanceAction extends SuperAppSch {
   @Type(() => BalanceAction)
   templateId: BalanceActionDocument;
 }
-
 export type BalanceActionDocument = BalanceAction & SuperAppDocument;
 
-export const BalanceActionSchema = SchemaFactory.createForClass(BalanceAction);
+export const BalanceActionSchema = createVirtualSchema(BalanceAction);

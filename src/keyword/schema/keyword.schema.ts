@@ -1,8 +1,12 @@
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Prop, Schema } from '@nestjs/mongoose';
 import * as mongoose from 'mongoose';
 import { User } from 'src/user/schema/user.schema';
 import { Type } from 'class-transformer';
-import { SuperAppDocument, SuperAppSch } from 'src/schema/app.schema';
+import {
+  createVirtualSchema,
+  SuperAppDocument,
+  SuperAppSch,
+} from 'src/schema/app.schema';
 
 export type KeywordDocument = SuperAppDocument & Keyword;
 export enum KeywordInfluence {
@@ -25,5 +29,4 @@ export class Keyword extends SuperAppSch {
   @Type(() => User)
   user: User;
 }
-
-export const KeywordSchema = SchemaFactory.createForClass(Keyword);
+export const KeywordSchema = createVirtualSchema(Keyword);
