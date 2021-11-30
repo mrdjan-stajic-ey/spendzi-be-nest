@@ -10,7 +10,7 @@ import {
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
-import { Response } from 'express';
+import { response, Response } from 'express';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import {
   CurrentUserInterceptor,
@@ -59,6 +59,31 @@ export class BalanceActionController {
     try {
       const result = await this.balanceActionService.getByUser(currentUser);
       response.status(HttpStatus.OK).send(result);
+    } catch (error) {
+      response.status(HttpStatus.BAD_REQUEST).send(error);
+    }
+  }
+
+  @Get('/group-expenses')
+  @UseInterceptors(CurrentUserInterceptor)
+  async groupExpenses(
+    @Req() request: IAppUserRequestInfo,
+    @Res() response: Response,
+  ) {
+    try {
+      const { currentUser } = request;
+      const result = await this.balanceActionService.getByUser(currentUser);
+      const expenseAgg = {};
+      for (const balanceAction of result) {
+        //FML this is bad
+        const { expenseTypes } = balanceAction;
+        for (const exType of expenseTypes) {
+          expenseAgg[exType.name] = !!expenseAgg[exType.name]
+            ? expenseAgg[exType.name] + balanceAction.amount
+            : balanceAction.amount;
+        }
+      }
+      response.status(HttpStatus.OK).send(expenseAgg);
     } catch (error) {
       response.status(HttpStatus.BAD_REQUEST).send(error);
     }

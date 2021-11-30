@@ -20,7 +20,7 @@ export class BalanceAction extends SuperAppSch {
   phrasesInfluence: string;
 
   @Prop()
-  amount: string;
+  amount: number;
 
   @Prop()
   amountLocators: [number, number];
@@ -33,9 +33,10 @@ export class BalanceAction extends SuperAppSch {
   @Type(() => Keyword)
   phrases: KeywordDocument[];
 
+  //Probaj da vratis ovo u modele. pa onda sa unwind jer meni ne treba koji su expansovi, tj samo njihova imena amounti svi idu iz balance item niza
   @Prop([{ type: mongoose.Schema.Types.ObjectId, ref: Expense.name }])
   @Type(() => Expense)
-  expenseTypes: ExpenseDocument[];
+  expenseTypes: ExpenseDocument[]; //maybe this should not be an array;
 
   @Prop()
   template: boolean;
