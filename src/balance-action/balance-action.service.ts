@@ -48,7 +48,7 @@ export class BalanceActionService {
       MESSAGE: 'LOG_ACTION_CREATED',
       body: { action, user },
     });
-    return result;
+    return result.toJSON();
   }
 
   async getByUser(user: UserDocument): Promise<BalanceActionDocument[]> {

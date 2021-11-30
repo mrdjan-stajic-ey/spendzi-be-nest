@@ -9,7 +9,6 @@ import {
 } from 'src/keyword/schema/keyword.schema';
 import { Expense, ExpenseDocument } from 'src/expense/schema/expense.schema';
 import { SuperAppDocument, SuperAppSch } from 'src/schema/app.schema';
-export type BalanceActionDocument = BalanceAction & SuperAppDocument;
 
 @Schema()
 export class BalanceAction extends SuperAppSch {
@@ -20,7 +19,7 @@ export class BalanceAction extends SuperAppSch {
   amount: string;
 
   @Prop()
-  amountLocators: [string, string];
+  amountLocators: [number, number];
 
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: User.name })
   @Type(() => User)
@@ -39,7 +38,9 @@ export class BalanceAction extends SuperAppSch {
 
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: BalanceAction.name })
   @Type(() => BalanceAction)
-  tempalteId: BalanceActionDocument;
+  templateId: BalanceActionDocument;
 }
+
+export type BalanceActionDocument = BalanceAction & SuperAppDocument;
 
 export const BalanceActionSchema = SchemaFactory.createForClass(BalanceAction);

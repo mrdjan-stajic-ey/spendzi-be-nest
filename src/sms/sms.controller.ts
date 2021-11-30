@@ -43,6 +43,7 @@ export class SmsController {
     @Req() req: IAppUserRequestInfo,
   ) {
     try {
+      debugger;
       const result = await this.smsService.smsReceived(sms, req.currentUser);
       resp.status(HttpStatus.OK).send(result);
     } catch (error) {

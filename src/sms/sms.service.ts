@@ -5,6 +5,7 @@ import { BalanceActionService } from 'src/balance-action/balance-action.service'
 import { BalanceActionDocument } from 'src/balance-action/schema/balance-action.schema';
 import { SmsDTO } from 'src/dto/Sms/sms.dto';
 import { KeywordInfluence } from 'src/keyword/schema/keyword.schema';
+import { TextService } from 'src/text/text.service';
 import { User, UserDocument } from 'src/user/schema/user.schema';
 import { SmsInfo, SmsInfoDocument } from './schema/sms.schema';
 
@@ -14,6 +15,7 @@ export class SmsService {
     @InjectModel(SmsInfo.name)
     private readonly smsModel: Model<SmsInfoDocument>,
     private readonly balanceAction: BalanceActionService,
+    private readonly textService: TextService,
   ) {}
   private readonly NOT_APLICABLE: string = 'NOT_APLICABLE';
   async getForUser(user: User): Promise<SmsInfo[]> {
@@ -30,7 +32,12 @@ export class SmsService {
     smsWords: string[],
     balanceItems: BalanceActionDocument[],
   ) {
-    const blueprintResult = {
+    const blueprintResult: {
+      keywords: string[];
+      amount: number;
+      incoming: boolean;
+      templateId: string;
+    } = {
       keywords: [],
       amount: null,
       incoming: null, //can be true or false;
@@ -40,34 +47,19 @@ export class SmsService {
       const { phrases } = balanceItem;
       for (const phrase of phrases) {
         const { name } = phrase;
-        if (smsWords.indexOf(name.toLocaleLowerCase()) === -1) {
+        const comparableName = name.toLowerCase().trim();
+        if (smsWords.indexOf(comparableName) === -1) {
           continue;
         } else {
           blueprintResult.keywords.push(name);
           if (blueprintResult.keywords.length === phrases.length) {
-            debugger;
-            //this should mean that is done
-            const preparedPrefix = balanceItem.amountLocators[0]
-              .toLowerCase()
-              .replace(/([ :]+)/g, '$1§sep§'); // duplikacija koda, boli me uvo
-            const preparedSufix = balanceItem.amountLocators[1]
-              .toLowerCase()
-              .replace(/([ :]+)/g, '$1§sep§');
-            const amountString = rawSms
-              .slice(
-                rawSms.indexOf(preparedPrefix) + preparedPrefix.length,
-                rawSms.indexOf(preparedSufix),
-              )
-              .replace(/[^0-9\.,]/g, ''); //zarezi odvajaju hiljade (to skloniti) tacke odvajau decimale, to nakalemiti kasnije // sacuvati decimale i dodati kasnije
-
             blueprintResult.templateId = balanceItem.id;
             (blueprintResult.incoming =
               balanceItem.phrasesInfluence === 'INBOUND'),
-              //findAmount - same logic as in the app;
-              (blueprintResult.amount = rawSms.slice(
-                rawSms.indexOf(preparedPrefix) + preparedPrefix.length,
-                rawSms.indexOf(preparedSufix),
-              ));
+              (blueprintResult.amount = this.textService.asumeAmount(rawSms, [
+                balanceItem.amountLocators[0],
+                balanceItem.amountLocators[1],
+              ]));
             return blueprintResult;
           } else {
             continue;
@@ -87,14 +79,12 @@ export class SmsService {
   async _createBalanceItem(smsData: SmsDTO, user: UserDocument) {
     const balanceItems: BalanceActionDocument[] =
       await this.balanceAction.getByUser(user);
-    const words: string[] = smsData.content
-      .replace(/([ .,;:]+)/g, '$1§sep§')
-      .split('§sep§') //to words
-      .map((w) => w.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, '')) //strip punctuation signs
-      .map((w) => w.trim()) //whitespace
-      .map((w) => w.toLowerCase()); //loweracse shit
+    debugger;
+    const words: string[] = this.textService
+      .splitByWords(smsData.content, true, false)
+      .map((w) => w.text.toLowerCase());
     let blueprintResult = null;
-    const sms_content_toLower = smsData.content.toLowerCase(); // we keep the raw sms in lowercase because the amount is extracted here;
+    const sms_content_toLower = smsData.content.toLowerCase(); // we keep the raw sms in lowercase because the amount is extracted here; //we need unique words here only;!!!!!!!!!!!!!!!!!!!!!!!!!
     try {
       blueprintResult = this.checkForKeywords(
         sms_content_toLower,
@@ -106,7 +96,7 @@ export class SmsService {
         console.log('Current sms does not meet the requirements');
         return Promise.resolve();
       } else {
-        console.log('Check for keywords failed', error);
+        console.log('Cz`heck for keywords failed', error);
         return Promise.resolve();
       }
     }
@@ -121,13 +111,9 @@ export class SmsService {
         )[0];
         await this.balanceAction.create(
           {
-            amount: blueprintResult.amount //TODO: fix it per sms`s you sent yourself
-              .trim()
-              .replace(',', '')
-              .replace('.', '')
-              .trim(), //TODO this needs to be revised
+            amount: blueprintResult.amount,
             amountLocators: balanceItemToCopy.amountLocators,
-            templateId: blueprintResult.id,
+            templateId: blueprintResult.templateId,
             phrases: balanceItemToCopy.phrases.map((p) => p.id),
             expenseTypes: balanceItemToCopy.expenseTypes.map((et) => et.id),
             phrasesInfluence:
