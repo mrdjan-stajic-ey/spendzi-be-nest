@@ -5,7 +5,7 @@ export interface IBalanceActionDTO {
   phrasesInfluence: KeywordInfluence;
   amount: string;
   phrases: string[];
-  expenseTypes: string[];
+  expenseType: string;
   amountLocators: [number, number];
   template?: boolean;
   templateId?: string;
@@ -19,7 +19,7 @@ export class BalanceActionDTO implements IBalanceActionDTO {
   @IsNotEmpty()
   phrases: string[];
   @IsNotEmpty()
-  expenseTypes: string[];
+  expenseType: string;
   @IsNotEmpty()
   amountLocators: [number, number];
   template = false;

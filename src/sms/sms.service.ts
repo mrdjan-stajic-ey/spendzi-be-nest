@@ -49,6 +49,7 @@ export class SmsService {
         const { name } = phrase;
         const comparableName = name.toLowerCase().trim();
         if (smsWords.indexOf(comparableName) === -1) {
+          blueprintResult.keywords = [];
           continue;
         } else {
           blueprintResult.keywords.push(name);
@@ -78,7 +79,7 @@ export class SmsService {
    */
   async _createBalanceItem(smsData: SmsDTO, user: UserDocument) {
     const balanceItems: BalanceActionDocument[] =
-      await this.balanceAction.getByUser(user);
+      await this.balanceAction.getTemplates(user);
     debugger;
     const words: string[] = this.textService
       .splitByWords(smsData.content, true, false)
@@ -115,7 +116,7 @@ export class SmsService {
             amountLocators: balanceItemToCopy.amountLocators,
             templateId: blueprintResult.templateId,
             phrases: balanceItemToCopy.phrases.map((p) => p.id),
-            expenseTypes: balanceItemToCopy.expenseTypes.map((et) => et.id),
+            expenseType: balanceItemToCopy.expenseType.id,
             phrasesInfluence:
               balanceItemToCopy.phrasesInfluence == KeywordInfluence.INBOUND
                 ? KeywordInfluence.INBOUND

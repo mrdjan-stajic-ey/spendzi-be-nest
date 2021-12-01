@@ -51,15 +51,26 @@ export class BalanceActionService {
     return result.toJSON();
   }
 
+  async getTemplates(user: UserDocument): Promise<BalanceActionDocument[]> {
+    const expenseItemByUser = await this.balanceActionModel
+      .find({ user, template: true })
+      .populate('user')
+      .populate('phrases')
+      .populate('expenseType')
+      .exec();
+    return expenseItemByUser;
+  }
+
   async getByUser(user: UserDocument): Promise<BalanceActionDocument[]> {
     const expenseItemByUser = await this.balanceActionModel
       .find({ user })
       .populate('user')
       .populate('phrases')
-      .populate('expenseTypes')
+      .populate('expenseType')
       .exec();
     return expenseItemByUser;
   }
+  // https://www.tutorialspoint.com/sum-with-mongodb-group-by-multiple-columns-to-calculate-total-marks-with-duplicate-ids
   //read this https://stackoverflow.com/questions/41356669/how-can-i-aggregate-nested-documents
   //   async groupExpenses(user: UserDocument) {
   //     // const groupedResult: { [key: string]: number } = {};

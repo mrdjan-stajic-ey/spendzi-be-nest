@@ -70,22 +70,23 @@ export class BalanceActionController {
     @Req() request: IAppUserRequestInfo,
     @Res() response: Response,
   ) {
-    try {
-      //This Is just wrong - faulty - not working as expected
-      const { currentUser } = request;
-      const result = await this.balanceActionService.getByUser(currentUser);
-      const expenseAgg = {};
-      for (const balanceAction of result) {
-        const { expenseTypes } = balanceAction;
-        for (const exType of expenseTypes) {
-          expenseAgg[exType.name] = !!expenseAgg[exType.name]
-            ? expenseAgg[exType.name] + balanceAction.amount
-            : balanceAction.amount;
-        }
-      }
-      response.status(HttpStatus.OK).send(expenseAgg);
-    } catch (error) {
-      response.status(HttpStatus.BAD_REQUEST).send(error);
-    }
+    // try {
+    //   //This Is just wrong - faulty - not working as expected
+    //   const { currentUser } = request;
+    //   const result = await this.balanceActionService.getByUser(currentUser);
+    //   const expenseAgg = {};
+    //   for (const balanceAction of result) {
+    //     const { expenseType } = balanceAction;
+    //     for (const exType of expenseTypes) {
+    //       expenseAgg[exType.name] = !!expenseAgg[exType.name]
+    //         ? expenseAgg[exType.name] + balanceAction.amount
+    //         : balanceAction.amount;
+    //     }
+    //   }
+    //   response.status(HttpStatus.OK).send(expenseAgg);
+    // } catch (error) {
+    //   response.status(HttpStatus.BAD_REQUEST).send(error);
+    // }
+    return response.status(HttpStatus.OK).send({});
   }
 }
