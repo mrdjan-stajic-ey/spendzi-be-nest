@@ -75,7 +75,6 @@ export class BalanceActionController {
       const result = await this.balanceActionService.getByUser(currentUser);
       const expenseAgg = {};
       for (const balanceAction of result) {
-        //FML this is bad
         const { expenseTypes } = balanceAction;
         for (const exType of expenseTypes) {
           expenseAgg[exType.name] = !!expenseAgg[exType.name]

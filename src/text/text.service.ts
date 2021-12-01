@@ -90,4 +90,26 @@ export class TextService {
     }
     return parseFloat(predictedAmount);
   }
+
+  public assumeByMatchingStrings(
+    sms: string,
+    [prefix, sufix]: [string, string],
+  ): number {
+    const words = this.splitByWords(sms, true);
+    const indexOfPrefix = words
+      .map((w) => w.text.toLowerCase())
+      .indexOf(prefix.toLowerCase());
+    const indexOfSufix = words
+      .map((w) => w.text.toLowerCase())
+      .indexOf(sufix.toLowerCase());
+
+    let predictedAmount = words.slice(indexOfPrefix + 1, indexOfSufix)[0].text;
+    //check for dots and commas;
+    const decimals = predictedAmount.substr(-3); // todo: generalize this operation
+    if (decimals[0] === '.') {
+      predictedAmount = predictedAmount.replace(',', '');
+    }
+
+    return parseFloat(predictedAmount);
+  }
 }
