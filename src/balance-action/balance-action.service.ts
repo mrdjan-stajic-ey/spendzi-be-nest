@@ -70,21 +70,41 @@ export class BalanceActionService {
       .exec();
     return expenseItemByUser;
   }
-  // https://www.tutorialspoint.com/sum-with-mongodb-group-by-multiple-columns-to-calculate-total-marks-with-duplicate-ids
-  //read this https://stackoverflow.com/questions/41356669/how-can-i-aggregate-nested-documents
-  //   async groupExpenses(user: UserDocument) {
-  //     // const groupedResult: { [key: string]: number } = {};
-  //     // const groupedExpenses = await this.balanceActionModel
-  //     //   .find({ user })
-  //     //   .then((data) => {
-  //     //     for (const expense of data) {
-  //     //       const { expenseTypes } = expense;
-  //     //       for (const type of expenseTypes) {
-  //     // 		groupedResult[type.name] =
-  //     //       }
-  //     //     }
-  //     //   });
-  //   }
+  //https://www.tutorialspoint.com/sum-with-mongodb-group-by-multiple-columns-to-calculate-total-marks-with-duplicate-ids
+  // read this https://stackoverflow.com/questions/41356669/how-can-i-aggregate-nested-documents
+  async groupExpenses(user: UserDocument) {
+    const id = new mongoose.Types.ObjectId(user.id);
+    const result = await this.balanceActionModel.aggregate([
+      {
+        $match: {
+          phrasesInfluence: 'OUTBOUND',
+          user: id,
+        },
+      },
+      {
+        $group: {
+          _id: '$expenseType',
+          sumQuantity: {
+            $sum: '$amount',
+          },
+        },
+      },
+      {
+        $lookup: {
+          from: 'expenses',
+          localField: '_id',
+          foreignField: '_id',
+          as: 'expenseType',
+        },
+      },
+      {
+        $unwind: {
+          path: '$expenseType',
+        },
+      },
+    ]);
+    return result;
+  }
 
   async creteBalanceAction(action: BalanceActionDTO, userId: string) {
     const transactionSession = await this.connection.startSession();
