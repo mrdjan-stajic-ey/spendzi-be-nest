@@ -28,12 +28,17 @@ export class TextController {
       body.prefixIndex,
       body.sufixIndex,
     ]);
+    const [prefix, sufix] = this.textService.getPrefixAndSufix(
+      body.smsContent,
+      [body.prefixIndex, body.sufixIndex],
+    );
+
     if (isNaN(result))
       return resp
         .status(HttpStatus.BAD_REQUEST)
         .send('Cannot parse, parsing result' + result);
     else {
-      return resp.status(HttpStatus.OK).send({ amount: result });
+      return resp.status(HttpStatus.OK).send({ amount: result, prefix, sufix });
     }
   }
 }

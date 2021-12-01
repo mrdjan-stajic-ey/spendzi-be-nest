@@ -14,9 +14,10 @@ export interface IAssumeAMountRequest {
   prefixIndex: number;
   sufixIndex: number;
 }
+
 //#region regular expresions
 const regexNoPunc = (msg: string) =>
-  msg.replace(/([ .,;]+)/g, '$1§sep§').split('§sep§');
+  msg.replace(/([ .,;:]+)/g, '$1§sep§').split('§sep§');
 const regexDefault = (msg: string) =>
   msg.replace(/([ ]+)/g, '$1§sep§').split('§sep§'); //defaults to only space
 //#endregion regular expresions
@@ -69,6 +70,16 @@ export class TextService {
         },
       });
     }
+  }
+
+  public getPrefixAndSufix(
+    sms: string,
+    [prefix, sufix]: [number, number],
+  ): [string, string] {
+    const phraseParts = this.splitByWords(sms, true);
+    const _prefix = phraseParts[prefix].text;
+    const _sufix = phraseParts[sufix].text;
+    return [regexNoPunc(_prefix)[0], regexNoPunc(_sufix)[0]];
   }
 
   public asumeAmount(sms: string, [prefix, sufix]: [number, number]): number {
