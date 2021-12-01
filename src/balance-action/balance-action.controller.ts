@@ -10,7 +10,7 @@ import {
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
-import { response, Response } from 'express';
+import { Response } from 'express';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import {
   CurrentUserInterceptor,
@@ -71,6 +71,7 @@ export class BalanceActionController {
     @Res() response: Response,
   ) {
     try {
+      //This Is just wrong - faulty - not working as expected
       const { currentUser } = request;
       const result = await this.balanceActionService.getByUser(currentUser);
       const expenseAgg = {};

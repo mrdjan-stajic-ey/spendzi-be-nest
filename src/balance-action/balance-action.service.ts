@@ -12,7 +12,6 @@ import { KeywordDTO } from 'src/dto/keywords/keyword.dto';
 import { UserDocument } from 'src/user/schema/user.schema';
 import { LogService } from 'src/log/log.service';
 import { LOG_LEVEL } from 'src/log/schema/log.schema';
-import { ExpenseDocument } from 'src/expense/schema/expense.schema';
 
 @Injectable()
 export class BalanceActionService {
@@ -62,19 +61,19 @@ export class BalanceActionService {
     return expenseItemByUser;
   }
   //read this https://stackoverflow.com/questions/41356669/how-can-i-aggregate-nested-documents
-  async groupExpenses(user: UserDocument) {
-    // const groupedResult: { [key: string]: number } = {};
-    // const groupedExpenses = await this.balanceActionModel
-    //   .find({ user })
-    //   .then((data) => {
-    //     for (const expense of data) {
-    //       const { expenseTypes } = expense;
-    //       for (const type of expenseTypes) {
-    // 		groupedResult[type.name] =
-    //       }
-    //     }
-    //   });
-  }
+  //   async groupExpenses(user: UserDocument) {
+  //     // const groupedResult: { [key: string]: number } = {};
+  //     // const groupedExpenses = await this.balanceActionModel
+  //     //   .find({ user })
+  //     //   .then((data) => {
+  //     //     for (const expense of data) {
+  //     //       const { expenseTypes } = expense;
+  //     //       for (const type of expenseTypes) {
+  //     // 		groupedResult[type.name] =
+  //     //       }
+  //     //     }
+  //     //   });
+  //   }
 
   async creteBalanceAction(action: BalanceActionDTO, userId: string) {
     const transactionSession = await this.connection.startSession();
