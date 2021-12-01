@@ -48,7 +48,7 @@ export class BalanceActionService {
       MESSAGE: 'LOG_ACTION_CREATED',
       body: { action, user },
     });
-    return result;
+    return result.toJSON();
   }
 
   async getByUser(user: UserDocument): Promise<BalanceActionDocument[]> {
@@ -60,6 +60,20 @@ export class BalanceActionService {
       .exec();
     return expenseItemByUser;
   }
+  //read this https://stackoverflow.com/questions/41356669/how-can-i-aggregate-nested-documents
+  //   async groupExpenses(user: UserDocument) {
+  //     // const groupedResult: { [key: string]: number } = {};
+  //     // const groupedExpenses = await this.balanceActionModel
+  //     //   .find({ user })
+  //     //   .then((data) => {
+  //     //     for (const expense of data) {
+  //     //       const { expenseTypes } = expense;
+  //     //       for (const type of expenseTypes) {
+  //     // 		groupedResult[type.name] =
+  //     //       }
+  //     //     }
+  //     //   });
+  //   }
 
   async creteBalanceAction(action: BalanceActionDTO, userId: string) {
     const transactionSession = await this.connection.startSession();

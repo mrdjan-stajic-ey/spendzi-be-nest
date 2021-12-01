@@ -1,8 +1,12 @@
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Prop, Schema } from '@nestjs/mongoose';
 import { User } from 'src/user/schema/user.schema';
 import * as mongoose from 'mongoose';
 import { Type } from 'class-transformer';
-import { SuperAppDocument, SuperAppSch } from 'src/schema/app.schema';
+import {
+  createVirtualSchema,
+  SuperAppDocument,
+  SuperAppSch,
+} from 'src/schema/app.schema';
 
 export type SmsInfoDocument = SuperAppDocument & SmsInfo;
 
@@ -25,4 +29,4 @@ export class SmsInfo extends SuperAppSch {
   user: User;
 }
 
-export const SmsInfoSchema = SchemaFactory.createForClass(SmsInfo);
+export const SmsInfoSchema = createVirtualSchema(SmsInfo);

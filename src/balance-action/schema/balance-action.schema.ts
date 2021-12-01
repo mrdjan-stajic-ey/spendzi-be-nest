@@ -1,4 +1,4 @@
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Prop, Schema } from '@nestjs/mongoose';
 import { User, UserDocument } from 'src/user/schema/user.schema';
 import * as mongoose from 'mongoose';
 import { Type } from 'class-transformer';
@@ -8,8 +8,11 @@ import {
   KeywordInfluence,
 } from 'src/keyword/schema/keyword.schema';
 import { Expense, ExpenseDocument } from 'src/expense/schema/expense.schema';
-import { SuperAppDocument, SuperAppSch } from 'src/schema/app.schema';
-export type BalanceActionDocument = BalanceAction & SuperAppDocument;
+import {
+  createVirtualSchema,
+  SuperAppDocument,
+  SuperAppSch,
+} from 'src/schema/app.schema';
 
 @Schema()
 export class BalanceAction extends SuperAppSch {
@@ -17,10 +20,10 @@ export class BalanceAction extends SuperAppSch {
   phrasesInfluence: string;
 
   @Prop()
-  amount: string;
+  amount: number;
 
   @Prop()
-  amountLocators: [string, string];
+  amountLocators: [number, number];
 
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: User.name })
   @Type(() => User)
@@ -30,16 +33,18 @@ export class BalanceAction extends SuperAppSch {
   @Type(() => Keyword)
   phrases: KeywordDocument[];
 
+  //Probaj da vratis ovo u modele. pa onda sa unwind jer meni ne treba koji su expansovi, tj samo njihova imena amounti svi idu iz balance item niza
   @Prop([{ type: mongoose.Schema.Types.ObjectId, ref: Expense.name }])
   @Type(() => Expense)
-  expenseTypes: ExpenseDocument[];
+  expenseTypes: ExpenseDocument[]; //maybe this should not be an array;
 
   @Prop()
   template: boolean;
 
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: BalanceAction.name })
   @Type(() => BalanceAction)
-  tempalteId: BalanceActionDocument;
+  templateId: BalanceActionDocument;
 }
+export type BalanceActionDocument = BalanceAction & SuperAppDocument;
 
-export const BalanceActionSchema = SchemaFactory.createForClass(BalanceAction);
+export const BalanceActionSchema = createVirtualSchema(BalanceAction);

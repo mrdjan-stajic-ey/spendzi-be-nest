@@ -12,6 +12,7 @@ import { LoggerMiddleware } from './middlewares/Log';
 import { LogMiddlewareModule } from './middlewares/LogMiddlewareModule';
 import { BalanceActionModule } from './balance-action/balance-action.module';
 import { SmsModule } from './sms/sms.module';
+import { TextModule } from './text/text.module';
 
 @Module({
   imports: [
@@ -45,6 +46,7 @@ import { SmsModule } from './sms/sms.module';
     AuthModule,
     BalanceActionModule,
     SmsModule,
+    TextModule,
   ],
   controllers: [AppController],
   providers: [AppService],
