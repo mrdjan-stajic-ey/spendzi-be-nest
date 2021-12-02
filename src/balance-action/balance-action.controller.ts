@@ -71,19 +71,9 @@ export class BalanceActionController {
     @Res() response: Response,
   ) {
     try {
-      //This Is just wrong - faulty - not working as expected
       const { currentUser } = request;
-      const result = await this.balanceActionService.getByUser(currentUser);
-      const expenseAgg = {};
-      for (const balanceAction of result) {
-        const { expenseTypes } = balanceAction;
-        for (const exType of expenseTypes) {
-          expenseAgg[exType.name] = !!expenseAgg[exType.name]
-            ? expenseAgg[exType.name] + balanceAction.amount
-            : balanceAction.amount;
-        }
-      }
-      response.status(HttpStatus.OK).send(expenseAgg);
+      const result = await this.balanceActionService.groupExpenses(currentUser);
+      response.status(HttpStatus.OK).send(result);
     } catch (error) {
       response.status(HttpStatus.BAD_REQUEST).send(error);
     }
