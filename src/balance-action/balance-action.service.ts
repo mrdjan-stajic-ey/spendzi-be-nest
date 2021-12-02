@@ -13,6 +13,16 @@ import { UserDocument } from 'src/user/schema/user.schema';
 import { LogService } from 'src/log/log.service';
 import { LOG_LEVEL } from 'src/log/schema/log.schema';
 
+interface AgregationExpenses {
+  labels: string[];
+  datasets: [
+    {
+      data: [];
+      [key: string]: any;
+    },
+  ];
+}
+
 @Injectable()
 export class BalanceActionService {
   constructor(
@@ -70,6 +80,16 @@ export class BalanceActionService {
       .exec();
     return expenseItemByUser;
   }
+  // 	interface AgregationExpenses {
+  //   labels: string[];
+  //   datasets: [
+  //     {
+  //       data: [];
+  //       [key: string]: any;
+  //     },
+  //   ];
+  // }
+
   //https://www.tutorialspoint.com/sum-with-mongodb-group-by-multiple-columns-to-calculate-total-marks-with-duplicate-ids
   // read this https://stackoverflow.com/questions/41356669/how-can-i-aggregate-nested-documents
   async groupExpenses(user: UserDocument) {
@@ -84,7 +104,7 @@ export class BalanceActionService {
       {
         $group: {
           _id: '$expenseType',
-          sumQuantity: {
+          sum: {
             $sum: '$amount',
           },
         },
@@ -103,7 +123,17 @@ export class BalanceActionService {
         },
       },
     ]);
-    return result;
+    if (result.length === 0) {
+      return result;
+    }
+    const aggregationResult = {
+      labels: [],
+      datasets: [{ data: [] }],
+    };
+    //simple function that maps data for UI charts i feel more comfortable writing on be
+    aggregationResult.labels = result.map((r) => r.expenseType.name);
+    aggregationResult.datasets[0].data = result.map((r) => r.sum);
+    return aggregationResult;
   }
 
   async creteBalanceAction(action: BalanceActionDTO, userId: string) {
