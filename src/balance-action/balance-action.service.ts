@@ -12,16 +12,7 @@ import { KeywordDTO } from 'src/dto/keywords/keyword.dto';
 import { UserDocument } from 'src/user/schema/user.schema';
 import { LogService } from 'src/log/log.service';
 import { LOG_LEVEL } from 'src/log/schema/log.schema';
-
-interface AgregationExpenses {
-  labels: string[];
-  datasets: [
-    {
-      data: [];
-      [key: string]: any;
-    },
-  ];
-}
+import { AggregationExpenses } from 'src/dto/balance/types';
 
 @Injectable()
 export class BalanceActionService {
@@ -34,12 +25,12 @@ export class BalanceActionService {
     private readonly logService: LogService,
   ) {}
 
-  async findAll(): Promise<BalanceAction[]> {
+  async findAll() {
     return await this.balanceActionModel
       .find()
       .populate('user')
       .populate('phrases')
-      .populate('expenseTypes')
+      .populate('expenseType')
       .exec();
   }
 
@@ -80,16 +71,6 @@ export class BalanceActionService {
       .exec();
     return expenseItemByUser;
   }
-  // 	interface AgregationExpenses {
-  //   labels: string[];
-  //   datasets: [
-  //     {
-  //       data: [];
-  //       [key: string]: any;
-  //     },
-  //   ];
-  // }
-
   //https://www.tutorialspoint.com/sum-with-mongodb-group-by-multiple-columns-to-calculate-total-marks-with-duplicate-ids
   // read this https://stackoverflow.com/questions/41356669/how-can-i-aggregate-nested-documents
   async groupExpenses(user: UserDocument) {
@@ -126,11 +107,11 @@ export class BalanceActionService {
     if (result.length === 0) {
       return result;
     }
-    const aggregationResult = {
+    const aggregationResult: AggregationExpenses = {
       labels: [],
       datasets: [{ data: [] }],
     };
-    //simple function that maps data for UI charts i feel more comfortable writing on be
+    //simple function that maps data for UI charts i feel more comfortable writing on backend
     aggregationResult.labels = result.map((r) => r.expenseType.name);
     aggregationResult.datasets[0].data = result.map((r) => r.sum);
     return aggregationResult;

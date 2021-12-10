@@ -17,8 +17,8 @@ import {
 } from 'src/decorators/current.user';
 import { KeywordDTO } from 'src/dto/keywords/keyword.dto';
 import { LogService } from 'src/log/log.service';
+import { LOG_LEVEL } from 'src/log/schema/log.schema';
 import { KeywordService } from './keyword.service';
-import { Keyword } from './schema/keyword.schema';
 
 @Controller('keyword')
 export class KeywordController {
@@ -28,11 +28,20 @@ export class KeywordController {
   ) {}
 
   @Get()
-  async findAll(): Promise<Keyword[]> {
-    return this.keywordService.findAll();
+  async findAll(@Res() response: Response) {
+    try {
+      const result = await this.keywordService.findAll();
+      response.status(HttpStatus.OK).send(result);
+    } catch (error) {
+      response.status(HttpStatus.BAD_REQUEST).send(error);
+      this.logservice.log({
+        LOG_LEVEL: LOG_LEVEL.ERROR,
+        MESSAGE: 'FAILED TO GET KEYWORDS',
+        body: { error },
+      });
+    }
   }
 
-  @UseGuards(JwtAuthGuard)
   @UseInterceptors(CurrentUserInterceptor)
   @Post('/create')
   async newKeyword(
@@ -48,6 +57,11 @@ export class KeywordController {
       res.status(HttpStatus.OK).send(_keyword);
     } catch (error) {
       res.status(HttpStatus.BAD_REQUEST).send(error);
+      this.logservice.log({
+        LOG_LEVEL: LOG_LEVEL.ERROR,
+        MESSAGE: 'FAILED TO GET KEYWORDS',
+        body: { error },
+      });
     }
   }
 }
