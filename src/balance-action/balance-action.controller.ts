@@ -22,6 +22,7 @@ import { BalanceAction } from './schema/balance-action.schema';
 
 @UseGuards(JwtAuthGuard)
 @Controller('/balance-action')
+@UseInterceptors(CurrentUserInterceptor)
 export class BalanceActionController {
   constructor(private balanceActionService: BalanceActionService) {}
 
@@ -31,7 +32,6 @@ export class BalanceActionController {
   }
 
   @Post('/create')
-  @UseInterceptors(CurrentUserInterceptor)
   async create(
     @Body() balanceAction: BalanceActionDTO,
     @Request() req: IAppUserRequestInfo,
@@ -50,7 +50,6 @@ export class BalanceActionController {
   }
 
   @Get('/user')
-  @UseInterceptors(CurrentUserInterceptor)
   async getBalanceItemsForUser(
     @Req() request: IAppUserRequestInfo,
     @Res() response: Response,
@@ -64,8 +63,21 @@ export class BalanceActionController {
     }
   }
 
+  @Get('/expanse-templates')
+  async getTemplateMessages(
+    @Req() request: IAppUserRequestInfo,
+    @Res() response: Response,
+  ) {
+    const { currentUser } = request;
+    try {
+      const result = await this.balanceActionService.getTemplates(currentUser);
+      response.status(HttpStatus.OK).send(result);
+    } catch (error) {
+      response.status(HttpStatus.BAD_REQUEST).send(error);
+    }
+  }
+
   @Get('/group-expenses')
-  @UseInterceptors(CurrentUserInterceptor)
   async groupExpenses(
     @Req() request: IAppUserRequestInfo,
     @Res() response: Response,
