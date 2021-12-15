@@ -6,11 +6,9 @@ import {
   Post,
   Request,
   Res,
-  UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { Response } from 'express';
-import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import {
   CurrentUserInterceptor,
   IAppUserRequestInfo,
