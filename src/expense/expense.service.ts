@@ -10,7 +10,7 @@ export class ExpenseService {
     private readonly expenseModel: Model<ExpenseDocument>,
   ) {}
 
-  async findAll(): Promise<Expense[]> {
+  async findAll(): Promise<ExpenseDocument[]> {
     return this.expenseModel.find().exec();
   }
 }
